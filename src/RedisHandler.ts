@@ -30,8 +30,6 @@ export default class RedisHandler {
 
   async getHashfields(key: string): Promise<Record<string, string>> {
     const data = await this.redis.hgetall(key);
-    console.log(data);
-
     return data;
   }
 

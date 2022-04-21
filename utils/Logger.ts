@@ -6,9 +6,6 @@ export default class Logger extends Console {
     super(process.stdout, process.stderr);
   }
 
-  /**
-   * @param {String} input
-   */
   info(input: string, type: string = "INFO"): void {
     if (type === "BLANK") {
       return this.log(chalk.hidden("-"));
@@ -18,17 +15,11 @@ export default class Logger extends Console {
     super.log(mess);
   }
 
-  /**
-   * @param {String} input
-   */
   error(input: string): void {
     const mess = chalk.bold.redBright(this.date() + " - [ ERR- ] => ") + input;
     super.error(mess);
   }
 
-  /**
-   * @param {String} input
-   */
   warn(input: string): void {
     const mess = chalk.bold.yellow(this.date() + " - [ WARN ] => ") + input;
     super.warn(mess);

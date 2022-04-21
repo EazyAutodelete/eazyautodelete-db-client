@@ -1,13 +1,9 @@
 import mongoose, { Mongoose } from "mongoose";
 import {
   ChannelSettings,
-  FilterType,
-  FilterUsage,
   GuildSettings,
-  ModeType,
   MongoHandlerConfig,
   UserSettings,
-  UserSettingsLanguage,
 } from "../typings";
 import Logger from "../utils/Logger";
 import guild from "../schemas/guild";
@@ -35,44 +31,73 @@ class MongoHandler {
   }
 
   // users
-  async getUserSettings(userId: string): Promise<UserSettings> {
-    const data: UserSettings = await this.user.findOne({ id: userId });
-    return data;
+  async getUserSettings(userId: string): Promise<UserSettings | undefined> {
+    const data = await this.user.findOne({ id: userId });
+    return data
+      ? {
+          id: data.id,
+          registered: data.registered,
+          language: data.language,
+        }
+      : undefined;
   }
 
   async createUserSettings(
     userId: string,
-    lang: UserSettingsLanguage = "en",
-    registered: number = new Date().getTime()
+    {
+      lang = "en",
+      registered = new Date().getTime(),
+    }: { lang?: string; registered?: number } = {}
   ): Promise<UserSettings> {
-    const data: UserSettings = await this.user.create({
+    const data = await this.user.create({
       id: userId,
       language: lang,
       registered: registered,
     });
-    return data;
+    return {
+      id: data.id,
+      registered: data.registered,
+      language: data.language,
+    };
   }
 
-  async deleteUserSettings(userId: string): Promise<any> {
-    const data = await this.user.deleteMany({ id: userId });
-    return data;
+  async deleteUserSettings(userId: string): Promise<void> {
+    await this.user.deleteOne({ id: userId });
+    return;
   }
 
   // guilds
-  async getGuildSettings(guildId: string): Promise<GuildSettings> {
-    const data: GuildSettings = await this.guild.findOne({ id: guildId });
-    return data;
+  async getGuildSettings(guildId: string): Promise<GuildSettings | undefined> {
+    const data = await this.guild.findOne({ id: guildId });
+    return data
+      ? {
+          id: data.id,
+          registered: data.registered,
+          prefix: data.prefix,
+          premium: data.premium,
+          adminroles: data.adminroles,
+          modroles: data.modroles,
+        }
+      : undefined;
   }
 
   async createGuildSettings(
     guildId: string,
-    registered: number = new Date().getTime(),
-    prefix: string = "%",
-    premium: boolean = false,
-    adminroles: Array<string> = [],
-    modroles: Array<string> = []
+    {
+      registered = new Date().getTime(),
+      prefix = "%",
+      premium = false,
+      adminroles = [],
+      modroles = [],
+    }: {
+      registered?: number;
+      prefix?: string;
+      premium?: boolean;
+      adminroles?: Array<string>;
+      modroles?: Array<string>;
+    } = {}
   ): Promise<GuildSettings> {
-    const data: GuildSettings = await this.guild.create({
+    const data = await this.guild.create({
       id: guildId,
       registered: registered,
       prefix: prefix,
@@ -80,32 +105,63 @@ class MongoHandler {
       adminroles: adminroles,
       modroles: modroles,
     });
-    return data;
+    return {
+      id: data.id,
+      registered: data.registered,
+      prefix: data.prefix,
+      premium: data.premium,
+      adminroles: data.adminroles,
+      modroles: data.modroles,
+    };
   }
 
-  async deleteGuildSettings(guildId: string): Promise<any> {
-    const data = await this.guild.deleteMany({ id: guildId });
-    return data;
+  async deleteGuildSettings(guildId: string): Promise<void> {
+    await this.guild.deleteOne({ id: guildId });
+    return;
   }
 
   // channels
-  async getChannelSettings(channelId: string): Promise<ChannelSettings> {
-    const data: ChannelSettings = await this.channel.findOne({ id: channelId });
-    return data;
+  async getChannelSettings(
+    channelId: string
+  ): Promise<ChannelSettings | undefined> {
+    const data = await this.channel.findOne({ id: channelId });
+    return data
+      ? {
+          id: data.id,
+          guild: data.guild,
+          registered: data.registered,
+          limit: data.limit,
+          mode: data.mode,
+          ignore: data.ignore,
+          filters: data.filters,
+          regex: data.regex,
+          filterUsage: data.filterUsage,
+        }
+      : undefined;
   }
 
   async createChannelSettings(
     channelId: string,
     guild: string,
-    registered: number = new Date().getTime(),
-    limit: number = 0,
-    mode: ModeType = 0,
-    ignore: Array<string> = [],
-    filters: Array<FilterType> = [],
-    regex: RegExp | null = null,
-    filterUsage: FilterUsage = "one"
+    {
+      registered = new Date().getTime(),
+      limit = 0,
+      mode = 0,
+      ignore = [],
+      filters = [],
+      regex = null,
+      filterUsage = "one",
+    }: {
+      registered?: number;
+      limit?: number;
+      mode?: number;
+      ignore?: Array<string>;
+      filters?: Array<number>;
+      regex?: RegExp | null;
+      filterUsage?: string;
+    } = {}
   ): Promise<ChannelSettings> {
-    const data: ChannelSettings = await this.channel.create({
+    const data = await this.channel.create({
       id: channelId,
       guild: guild,
       registered: registered,
@@ -116,12 +172,22 @@ class MongoHandler {
       regex: regex,
       filterUsage: filterUsage,
     });
-    return data;
+    return {
+      id: data.id,
+      guild: data.guild,
+      registered: data.registered,
+      limit: data.limit,
+      mode: data.mode,
+      ignore: data.ignore,
+      filters: data.filters,
+      regex: data.regex,
+      filterUsage: data.filterUsage,
+    };
   }
 
-  async deleteChannelSettings(channelId: string): Promise<any> {
-    const data = await this.channel.deleteMany({ id: channelId });
-    return data;
+  async deleteChannelSettings(channelId: string): Promise<void> {
+    await this.channel.deleteOne({ id: channelId });
+    return;
   }
 }
 
