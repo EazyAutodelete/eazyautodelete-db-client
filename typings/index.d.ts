@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Redis } from "ioredis";
 import { Console } from "console";
+import { TextChannel } from "discord.js";
 
 export interface DatabaseHandlerConfig {
   redis: RedisHandlerConfig;

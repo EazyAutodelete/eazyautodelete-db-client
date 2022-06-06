@@ -39,10 +39,7 @@ export default class RedisHandler {
   ): Promise<void> {
     const fields = Object.keys(data);
     if (fields.length > 1)
-      await this.redis.hmset(
-        key,
-        ...fields.map((field) => [field, data[field]]).flat()
-      );
+      await this.redis.hmset(key, ...fields.map(field => [field, data[field]]).flat());
     else await this.redis.hset(key, fields[0], data[fields[0]]);
   }
 

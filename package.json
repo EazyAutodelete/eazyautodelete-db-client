@@ -1,6 +1,6 @@
 {
   "name": "@eazyautodelete/eazyautodelete-db-client",
-  "version": "1.2.0",
+  "version": "1.2.5",
   "description": "Database client used by the EazyAutodelete Discord Bot,",
   "main": "build/index.js",
   "scripts": {
